@@ -1,0 +1,51 @@
+name: shangan
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: shangan-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-study}
+      POSTGRES_USER: ${POSTGRES_USER:-study}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-study123}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-study} -d ${POSTGRES_DB:-study}"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  backend:
+    build: ./backend
+    container_name: shangan-backend
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-study}:${POSTGRES_PASSWORD:-study123}@db:5432/${POSTGRES_DB:-study}
+      SECRET_KEY: ${SECRET_KEY:?请在 .env 中配置 SECRET_KEY（随机长字符串）}
+      PDF_DATA_DIR: /data/pdf
+      USE_X_ACCEL: "true"
+      INIT_ADMIN_USERNAME: ${INIT_ADMIN_USERNAME:-admin}
+      INIT_ADMIN_PASSWORD: ${INIT_ADMIN_PASSWORD:?请在 .env 中配置 INIT_ADMIN_PASSWORD（管理员初始密码）}
+      INIT_ADMIN_EMAIL: ${INIT_ADMIN_EMAIL:-admin@example.com}
+    volumes:
+      - pdfdata:/data/pdf
+    depends_on:
+      db:
+        condition: service_healthy
+
+  web:
+    build: ./web
+    container_name: shangan-web
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - pdfdata:/data/pdf:ro
+    depends_on:
+      - backend
+
+volumes:
+  pgdata: {}
+  pdfdata: {}

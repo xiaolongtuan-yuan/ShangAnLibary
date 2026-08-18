@@ -1,0 +1,24 @@
+{
+  "name": "shangan-shufang-web",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "上岸书房 · 考公 PDF 资料在线阅读平台前端",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "@element-plus/icons-vue": "^2.3.1",
+    "axios": "^1.7.9",
+    "element-plus": "^2.9.3",
+    "pdfjs-dist": "^4.10.38",
+    "pinia": "^2.3.1",
+    "vue": "^3.4.38",
+    "vue-router": "^4.5.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.1",
+    "vite": "^5.4.11"
+  }
+}

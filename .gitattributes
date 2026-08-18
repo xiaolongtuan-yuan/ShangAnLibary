@@ -1,0 +1,18 @@
+# 统一行尾：源码与脚本在服务器（Linux）上必须保持 LF
+# （deploy.sh / scripts/*.sh / Dockerfile 若为 CRLF 会在 bash 中报错）
+* text=auto
+*.sh text eol=lf
+Dockerfile text eol=lf
+*.dockerfile text eol=lf
+*.conf text eol=lf
+*.py text eol=lf
+*.js text eol=lf
+*.mjs text eol=lf
+*.cjs text eol=lf
+*.vue text eol=lf
+*.css text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.html text eol=lf

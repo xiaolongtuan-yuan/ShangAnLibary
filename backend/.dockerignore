@@ -1,0 +1,7 @@
+.venv
+__pycache__
+*.pyc
+*.db
+smoke_pdf
+uvicorn.log
+uvicorn.err

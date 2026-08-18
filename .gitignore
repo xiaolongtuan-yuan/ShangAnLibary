@@ -1,0 +1,26 @@
+# 环境与密钥
+.env
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+smoke.db
+*.db
+
+# Node / 前端构建
+node_modules/
+web/dist/
+web/.npm-cache/
+
+# 本地工具链
+.tools/
+
+# 测试产物
+smoke_pdf/
+uvicorn.log
+uvicorn.err
+
+# 系统
+.DS_Store
+Thumbs.db
