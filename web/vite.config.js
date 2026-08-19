@@ -12,7 +12,9 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
-    }
+    },
+    // 强制全局只解析一份 pdfjs-dist，杜绝任何双实例（类身份不一致 → 私有字段报错）
+    dedupe: ['pdfjs-dist']
   },
   server: {
     port: 5173,
@@ -27,7 +29,9 @@ export default defineConfig({
     outDir: 'dist',
     // pdfjs-dist v4 产物含较新语法，放宽目标避免构建报错
     target: 'esnext',
-    minify: noEsbuild ? false : 'esbuild',
+    // 用 terser 压缩：esbuild 的标识符/私有字段重命名会破坏 pdf.js 的
+    // 私有字段（生产环境报 "Cannot read private member #s"），terser 不重命名私有成员
+    minify: 'terser',
     cssMinify: noEsbuild ? false : undefined,
     chunkSizeWarningLimit: 2500,
     rollupOptions: {

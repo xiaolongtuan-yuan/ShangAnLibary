@@ -114,7 +114,9 @@ async function loadSession() {
       document.title = `${docInfo.value.title} - 上岸书房`
     }
     if (!data.file_url) throw new Error('未获取到文件地址')
-    const task = pdfjsLib.getDocument({ url: data.file_url })
+    // isEvalSupported: false 禁用 pdf.js 内部 Function/eval 路径（该路径在压缩构建下
+    // 与私有字段机制冲突，导致 "Cannot read private member #s" 报错）
+    const task = pdfjsLib.getDocument({ url: data.file_url, isEvalSupported: false })
     pdfDoc.value = await task.promise
     pageCount.value = pdfDoc.value.numPages
     await preloadPages()
