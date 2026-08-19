@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import { ref, shallowRef, shallowReactive, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import * as pdfjsLib from 'pdfjs-dist'
 // worker 走 ?url 静态资源 + workerSrc（v3 为经典脚本 worker，无模块 MIME 要求，最稳）
@@ -27,10 +27,13 @@ const wrapEls = reactive({})
 
 const loading = ref(true)
 const errorMsg = ref('')
-const pdfDoc = ref(null)
+// pdf.js 文档对象必须浅引用：ref/reactive 的深 Proxy 会破坏类私有字段（#pagePromises 等），
+// 导致 "Cannot read private member #d" 报错（mozilla/pdf.js#17325）
+const pdfDoc = shallowRef(null)
 const docInfo = ref(null)
 const pageCount = ref(0)
-const pageObjs = reactive({})
+// 页面对象同样不能深代理，否则 getViewport/render/getTextContent 读取私有字段时报错
+const pageObjs = shallowReactive({})
 const baseSizes = reactive({})
 
 const scale = ref(1)
