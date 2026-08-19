@@ -2,8 +2,8 @@
 import { ref, reactive, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import * as pdfjsLib from 'pdfjs-dist'
-// worker 走 ?url 静态资源 + workerSrc（Node 运行时验证过的组合；nginx 已对 .mjs 返回正确 MIME）
-import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url'
+// worker 走 ?url 静态资源 + workerSrc（v3 为经典脚本 worker，无模块 MIME 要求，最稳）
+import workerUrl from 'pdfjs-dist/build/pdf.worker.min.js?url'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Back, Menu, ArrowDown, FullScreen, Loading, Document } from '@element-plus/icons-vue'
 import http, { getErr } from '@/api/http'
