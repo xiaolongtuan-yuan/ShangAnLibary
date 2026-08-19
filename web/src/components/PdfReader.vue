@@ -1,5 +1,5 @@
 <script setup>
-import { ref, shallowRef, shallowReactive, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import { ref, reactive, shallowRef, shallowReactive, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import * as pdfjsLib from 'pdfjs-dist'
 // worker 走 ?url 静态资源 + workerSrc（v3 为经典脚本 worker，无模块 MIME 要求，最稳）
