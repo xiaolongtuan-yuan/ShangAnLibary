@@ -2,7 +2,10 @@
 import { ref, reactive, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import * as pdfjsLib from 'pdfjs-dist'
-import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url'
+// 让 Vite 直接打包 PDF.js worker（?worker），并通过 workerPort 交给 PDF.js：
+// 保证 worker 与主包来自同一份代码（避免类结构不匹配 → "Cannot read private member #s"），
+// 且不再走"动态导入静态 URL"链路（彻底绕开 MIME/缓存问题）
+import PdfJsWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?worker'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Back, Menu, ArrowDown, FullScreen, Loading, Document } from '@element-plus/icons-vue'
 import http, { getErr } from '@/api/http'
@@ -10,7 +13,7 @@ import { ANNOTATION_COLORS, withAlpha } from '@/utils'
 import NotePanel from './NotePanel.vue'
 import PdfPage from './PdfPage.vue'
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = workerUrl
+pdfjsLib.GlobalWorkerOptions.workerPort = new PdfJsWorker()
 
 const props = defineProps({
   documentId: { type: [Number, String], required: true }
