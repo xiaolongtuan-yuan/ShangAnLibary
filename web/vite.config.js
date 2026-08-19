@@ -29,7 +29,15 @@ export default defineConfig({
     target: 'esnext',
     minify: noEsbuild ? false : 'esbuild',
     cssMinify: noEsbuild ? false : undefined,
-    chunkSizeWarningLimit: 2500
+    chunkSizeWarningLimit: 2500,
+    rollupOptions: {
+      output: {
+        // 版本化资源路径（v2）：强制改变所有静态资源 URL，
+        // 使曾缓存了错误 MIME 响应的浏览器（pdf.worker 加载失败问题）立即失效
+        assetFileNames: 'assets/v2/[name]-[hash][extname]',
+        chunkFileNames: 'assets/v2/[name]-[hash].js'
+      }
+    }
   },
   esbuild: noEsbuild ? false : undefined
 })
