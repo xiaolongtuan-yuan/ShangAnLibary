@@ -132,6 +132,7 @@ npm run dev        # http://localhost:5173（/api 已代理到 8000）
 - **拉取镜像失败（`failed to resolve reference` / `no such host`）**：Docker 镜像源（如 hub-mirror.c.163.com）已失效。执行 `sudo ./scripts/fix-docker-mirror.sh` 改用 `docker.1ms.run` 等可用源并重启 Docker，然后 `docker compose pull && ./deploy.sh`
 - **构建时基础镜像报 `unexpected EOF` / `failed to resolve source metadata`**：镜像源瞬时抖动，属偶发网络问题。先执行 `./scripts/pull-images.sh`（自动重试把 4 个基础镜像全部拉齐），再 `./deploy.sh`；若仍失败可多跑一次或换镜像源
 - **打开 PDF 报 `Setting up fake worker failed: Failed to fetch dynamically imported module: ...pdf.worker.min-xxx.mjs`**：nginx 未把 `.mjs` 映射为 JS 类型（`Content-Type: application/octet-stream`），浏览器拒绝加载 worker 模块。修复：`web/nginx.conf` 已含 `.mjs` 专用路由（强制 `text/javascript`），同步该文件后执行 `docker compose up -d --build web`，并用 `curl -sI http://IP/assets/pdf.worker.min-*.mjs` 确认返回 `Content-Type: text/javascript`
+- **打开 PDF 报 `Cannot read private member #s from an object whose class did not declare it`**：esbuild 压缩会重命名 pdf.js 的私有字段导致类结构冲突（仅生产构建出现，本地开发不可见）。已修复：改用 terser 压缩 + `isEvalSupported: false` + `dedupe` 锁定单实例；更新代码后 `./scripts/update.sh` 重建即可
 - **打包上传太大（带了 node_modules/.venv）**：用 `./scripts/package.sh` 自动排除依赖目录；Windows 下等效命令（在项目目录执行）：
   ```powershell
   tar -czf ..\shangan-deploy.tar.gz --exclude=".git" --exclude=".env" --exclude=".venv" --exclude=".tools" --exclude="node_modules" --exclude="web/.npm-cache" --exclude="web/dist" --exclude="__pycache__" --exclude="*.db" .
